@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bicko</title>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {% block stylesheets %}
+            <link rel="stylesheet" href="assets/css/main.css" />
+            <link rel="stylesheet" href="assets/css/payement.css" />
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+                  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+                  crossorigin=""/>
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}
+            {% block header %}
+                <header id="header" class="alt">
+                    <div class="inner">
+                        <h1>Bicko</h1>
+                        <p>“Quand vous doublez un cycliste, laissez-lui toujours la place pour tomber.”</p>
+                    </div>
+                </header>
+            {% endblock %}
+
+            {% block footer %}
+                <footer id="footer">
+                    <ul class="icons">
+                        <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+                        <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+                        <li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+                        <li><a href="#" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
+                        <li><a href="#" class="icon fa-envelope"><span class="label">Email</span></a></li>
+                    </ul>
+                    <p class="copyright">&copy; By Sarah Cosyns</p>
+                </footer>
+            {% endblock %}
+        {% endblock %}
+
+            {% block javascripts %}
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+                <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+                        integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+                        crossorigin=""></script>
+            <script>
+                $(document).ready(function () {
+
+                    //AFFICHER LA MAP
+                    mymap = L.map('map').setView([50.853415, 4.343272], 12);
+
+                    var tileStreets = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                        maxZoom: 18,
+                        id: 'mapbox.streets',
+                        accessToken: 'pk.eyJ1Ijoic2FyYWhjb3N5bnMiLCJhIjoiY2p4YTh6ZmtxMDE2bjN2cnhvZGJuZ2IybiJ9.8x7cxblxZ9Bv_FlhJ60duA'
+                    })
+                    tileStreets.addTo(mymap);
+
+
+                    $.ajax({
+                            method: 'GET',
+                            url: "https://opendata.bruxelles.be/api/records/1.0/search/?dataset=stations-villo-" +
+                                "disponibilites-en-temps-reel&rows=20&facet=banking&facet=bonus&facet=status&facet=contract_name",
+                            datatype: 'json',
+                            success: function (data) {
+                                //console.log('success', data);
+                                console.log(data);
+                                var coordinates = data.records[0].geometry.coordinates;
+                                //console.log(coordinates);
+                                var url = $('#map').data('url');
+
+                                for(var i = 0; i < data.records.length; i++) {
+                                    var lat = data.records[i].geometry.coordinates[0];
+                                    var long = data.records[i].geometry.coordinates[1];
+                                    var stands = data.records[i].fields.available_bike_stands;
+                                    var id = data.records[i].fields.number;
+                                    var address = data.records[i].fields.address;
+                                    var name = data.records[i].fields.name;
+
+                                    L.marker([long, lat]).addTo(mymap).bindPopup(name + '</br>Il reste '+ stands +' vélos </br> <a href="'+ url +'?id='+ id +'&address='+ address +'&name='+ name +'">Réservez</a>');
+                                }
+
+
+                            }
+                        })
+                    });
+            </script>
+            {% endblock %}
+    </body>
+</html>

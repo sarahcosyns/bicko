@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {#---------------HEDAER-------------------#}
+    {% block header %}
+        {{ parent() }}
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {% endblock %}
+    {#---------------MAPS-------------------#}
+    <div id="wrapper">
+
+        <section id="intro" class="main">
+            <div id="map" style="height: 380px" data-url="{{ path('payement') }}"></div>
+        </section>
+
+        <form action="{{ path('contact') }}" method="post">
+            <input type="text" name="lastname" placeholder="Nom">
+            <input type="text" name="firstname" placeholder="Prénom">
+            <textarea name="message" id="" cols="30" rows="10">
+                Message
+            </textarea>
+            <div class="g-recaptcha" data-sitekey="6LeDG6sUAAAAADyexG0zwzJfA-To9pvE3DGn3RVQ"></div>
+            <input type="submit" value="Send">
+        </form>
+        {#---------------FOOTER-------------------#}
+        {% block footer %}
+            {{ parent() }}
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+

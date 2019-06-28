@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {#---------------HEDAER-------------------#}
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+    {#---------------MAPS-------------------#}
+    <div id="wrapper">
+
+        <div class="example-wrapper">
+           <h1>PAYEMENT OK</h1>
+        </div>
+
+        {#---------------FOOTER-------------------#}
+        {% block footer %}
+            {{ parent() }}
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
